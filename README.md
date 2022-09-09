@@ -23,7 +23,7 @@
  
 ## 利用例
 エンドポイントURLは下記のいずれでもOK<br>
-　https://hersys.mirko.jp/sparql/<br>
+　https://hersys.mirko.jp/sparql<br>
 　https://hersys.mirko.jp/sparql/index.php<br>
  
 GET<br>
