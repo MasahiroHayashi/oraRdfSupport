@@ -21,3 +21,14 @@
 　WEBサーバーに設置した index.php をエンドポイントとしてクエリを投げてみてください。POST又はGETのどちらでもOKです。結果がJSONで返ります。<br>
 　また、POSTやGETパラメータなしで、ブラウザから index.php にアクセスすると、SPARQLクエリの簡易入力フォーム画面が表示されます。
  
+## 利用例
+エンドポイントURLは下記のいずれでもOK<br>
+　https://hersys.mirko.jp/sparql/<br>
+　https://hersys.mirko.jp/sparql/index.php<br>
+ 
+GET<br>
+　https://hersys.mirko.jp/sparql?query=select+%3Fs+%3Fp+%3Fo+where+%7B%3Fs+%3Fp+%3Fo%7D+limit+3&format=csv<br>
+　https://hersys.mirko.jp/sparql/index.php?query=select+%3Fs+%3Fp+%3Fo+where+%7B%3Fs+%3Fp+%3Fo%7D+limit+3&format=csv<br>
+ 
+POST例<br>
+　https://hersys.mirko.jp/sparql/post.html<br>
