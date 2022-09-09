@@ -2,7 +2,7 @@
 
 // **************  ここにエンドポイントのURLを入力してください  *******************
 
-$url = 'https://129.213.57.216:8001/orardf/api/v1/datasets/query/published/HERSYS';
+$url = 'https://xxx.xxx.xxx.xxx:8001/orardf/api/v1/datasets/query/published/HERSYS';
 
 //  *******************************************************************************
 
