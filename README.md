@@ -2,6 +2,7 @@
 　LODチャレンジ2022のイベント <a href="https://lodc2022sparql.peatix.com/">SPARQLエンドポイントの使い方・作り方2022</a> にてオラクルさんから紹介があった、Oracle RDF Graph Server を構築し使ってみたところ、初めての方には少し使いにくいだろうな、と感じる点がいくつかありました。
 
 ・　エンドポイントのURLが長くて、グローバルIPとポート番号が丸見えでイヤ<br>
+　　例）https://129.213.57.216:8001/orardf/api/v1/datasets/query/published/HERSYS<br>
 ・　POSTアクセスができない（GETのみ）<br>
 ・　オレオレ証明書なのでブラウザの警告が出る<br>
 ・　ブラウザJSからのAJAX通信が通らない（CORSの不許可？）<br>
