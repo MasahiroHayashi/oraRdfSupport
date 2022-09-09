@@ -87,14 +87,14 @@ table {
 <script>
 function execute() {
 	document.getElementById("results").innerHTML = "connecting...";
-    var endpoint = location.href;
-    var method = "POST";
-	var query = document.getElementById("query").value;
+    const endpoint = location.href;
+    const method = "POST";
+	const query = document.getElementById("query").value;
     sparqlQuery(query,endpoint,method) ;
 }
 function sparqlQuery(queryStr,endpoint,method) { 
-    var querypart = "query=" + encodeURIComponent(queryStr);
-    var xmlhttp = new XMLHttpRequest();
+    const querypart = "query=" + encodeURIComponent(queryStr);
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.open(method, endpoint, true);
     xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xmlhttp.setRequestHeader("Accept", "application/sparql-results+json");
