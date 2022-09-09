@@ -3,7 +3,7 @@
 
 ・　エンドポイントのURLが長くて、グローバルIPとポート番号が丸見えでイヤ<br>
 　　例）https://129.213.57.216:8001/orardf/api/v1/datasets/query/published/HERSYS<br>
-・　POSTアクセスができない（GETのみ）<br>
+・　POSTアクセスができない（GETのみ可能）<br>
 ・　オレオレ証明書なのでブラウザの警告が出る<br>
 ・　ブラウザJSからのAJAX通信が通らない（CORSの不許可？）<br>
 ・　SPARQLクエリの入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
