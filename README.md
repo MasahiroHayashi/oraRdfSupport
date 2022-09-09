@@ -6,7 +6,7 @@
 ・　POSTアクセスができない（GETのみ可能）<br>
 ・　オレオレ証明書なのでブラウザの警告が出る<br>
 ・　ブラウザJSからのAJAX通信が通らない（CORSの不許可？）<br>
-・　SPARQLクエリの入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
+・　公開用のSPARQLクエリ入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
  
 　これらの使いにくい点を補完するための、ちょっとしたPHPプログラムを作成しましたので、どうぞご利用ください。
  
