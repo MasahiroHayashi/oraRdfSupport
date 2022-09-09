@@ -17,7 +17,7 @@
 
 ## 使い方
 
-　POST又はGETで、WEBサーバーに設置した index.php にクエリを投げてみてください。結果がJSONで返ります。<br>
+　WEBサーバーに設置した index.php をエンドポイントとして、POST又はGETでクエリを投げてみてください。結果がJSONで返ります。<br>
 　POSTやGETパラメータなしで、ブラウザから index.php にアクセスするとSPARQLクエリの入力フォーム画面が表示されます。
 　
  
