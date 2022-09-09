@@ -27,7 +27,7 @@
 　https://hersys.mirko.jp/sparql/index.php<br>
  
 GET例<br>
-　https://hersys.mirko.jp/sparql?query=select+%3Fs+%3Fp+%3Fo+where+%7B%3Fs+%3Fp+%3Fo%7D+limit+3&format=csv<br>
+　https://hersys.mirko.jp/sparql?query=select+%3Fs+%3Fp+%3Fo+where+%7B%3Fs+%3Fp+%3Fo%7D+limit+3<br>
  
 POST例<br>
 　https://hersys.mirko.jp/sparql/post.html<br>
