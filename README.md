@@ -5,7 +5,7 @@
 　　例）https://129.213.57.216:8001/orardf/api/v1/datasets/query/published/HERSYS<br>
 ・　POSTアクセスができない（GETのみ可能）<br>
 ・　オレオレ証明書なのでブラウザの警告が出る<br>
-・　ブラウザJSから直接のAJAX通信が通らない<br>
+・　ブラウザJSから直接エンドポイントに向けたAjax通信が通らない<br>
 ・　公開用のSPARQLクエリ入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
  
 　これらの使いにくい点を補完するための、ちょっとしたPHPプログラムを作成しましたので、どうぞご利用ください。
