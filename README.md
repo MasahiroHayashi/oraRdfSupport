@@ -1,4 +1,4 @@
-# Oracle RDF Graph Server の<br> SPARQL ENDPOINT補助プログラム
+# Oracle RDF Graph Server の<br> SPARQL ENDPOINT補助アプリ
 　LODチャレンジ2022のイベント <a href="https://lodc2022sparql.peatix.com/">SPARQLエンドポイントの使い方・作り方2022</a> にてオラクルさんから紹介があった、Oracle RDF Graph Server を構築し使ってみたところ、初めての方には少し使いにくいだろうな、と感じる点がいくつかありました。
 
 ・　エンドポイントのURLが長くて、グローバルIPとポート番号が丸見えで恥ずかしい<br>
@@ -8,7 +8,7 @@
 ・　ブラウザJSから直接エンドポイントに向けたAjax通信が通らない<br>
 ・　公開用のSPARQLクエリ入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
  
-　これらの使いにくい点を補完するための、ちょっとしたPHPプログラムを作成しましたので、どうぞご利用ください。
+　これらの使いにくい点を補完するための、ちょっとしたPHPアプリケーションを作成しましたので、どうぞご利用ください。
  
 ## 設置方法
 
