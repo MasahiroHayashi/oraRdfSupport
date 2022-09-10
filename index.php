@@ -65,21 +65,21 @@ function getData($url,$query){
 	width: 1000px;
 	margin: auto;
 }
+table {
+	word-break: break-all;
+	border-collapse:  collapse;
+	width:  100%;
+	table-layout: fixed;
+}
 th {
-    background:#EEE;
-    border: solid 1px;
+	background:#EEE;
+	border: solid 1px #AAA;
 	padding:5px;
 }
 td {
-    font-size:80%;
-    border: solid 1px;
+	font-size:80%;
+	border: solid 1px #AAA;
 	padding:5px;
-}
-table {
-	word-break: break-all;
-    border-collapse:  collapse;
-    width:  100%;
-    table-layout: fixed;
 }
 .button {
 	width:200px; 
@@ -87,98 +87,158 @@ table {
 	font-size:125%; 
 	margin:0 0 15px 0;
 }
-. errMsg {
+.errMsg {
 	font-size:125%;
 	color:red;
 }
+.downLoad {
+	display:inline-block;
+	text-align:center;
+	width:160px;
+	font-size:90%;
+	margin:0 0 0 60px;
+	background:#EEE;
+}
+.textArea {
+	width:100%;
+	height:200px;	
+}
 </style>
 <script>
+//CSVとJSONダウンロードのためのグローバル変数
+let csvText = "";
+let jsonText = ""; 
+let head = "";
+let rows = "";
+
 function execute() {
 	document.getElementById("results").innerHTML = "connecting...";
-    const endpoint = location.href;
-    const method = "POST";
+	const endpoint = location.href;
+	const method = "POST";
 	const query = document.getElementById("query").value;
-    sparqlQuery(query,endpoint,method) ;
+	sparqlQuery(query,endpoint,method) ;
 }
 function sparqlQuery(queryStr,endpoint,method) { 
-    const querypart = "query=" + encodeURIComponent(queryStr);
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open(method, endpoint, true);
-    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xmlhttp.setRequestHeader("Accept", "application/sparql-results+json");
-    xmlhttp.onreadystatechange = function() {
-        if(xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200 || xmlhttp.status == 201 ) {
-                onSuccessQuery(xmlhttp.responseText);
-            } else {
-                document.getElementById("results").innerHTML = "error" ;
-            }
-        }
-    }
-    xmlhttp.send(querypart);
+	const querypart = "query=" + encodeURIComponent(queryStr);
+	let xmlhttp = new XMLHttpRequest();
+	xmlhttp.open(method, endpoint, true);
+	xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xmlhttp.setRequestHeader("Accept", "application/sparql-results+json");
+	xmlhttp.onreadystatechange = function() {
+		if(xmlhttp.readyState == 4) {
+			if(xmlhttp.status == 200 || xmlhttp.status == 201 ) {
+				onSuccessQuery(xmlhttp.responseText);
+			} else {
+				document.getElementById("results").innerHTML = "server error" ;
+				globalClear();
+				return;
+			}
+		}
+	}
+xmlhttp.send(querypart);
 }
 function onSuccessQuery(text) {
 	try {
-			const jsonObj = JSON.parse(text);
-			const head = jsonObj.head.vars;
-			const rows = jsonObj.results.bindings;
-			if (rows.length === 0) {
-				document.getElementById("results").innerHTML = "<span class='errMsg'>There is no data that matches the search condition.</span>" ;
-				return;
-			}
-			makeTable(head, rows);
-
-		} catch (error) {			
-			document.getElementById("results").innerHTML = "<span class='errMsg'>SPARQL syntax error</span>" ;
+		const jsonObj = JSON.parse(text);
+		jsonText = JSON.stringify(jsonObj,undefined,1);
+		head = jsonObj.head.vars;
+		rows = jsonObj.results.bindings;
+		if (rows.length === 0) {
+			document.getElementById("results").innerHTML = "<span class='errMsg'>There is no data that matches the search condition.</span>" ;
+			globalClear();
+			return;
 		}
+		makeTable(head, rows);
+
+	} catch (error) {			
+		document.getElementById("results").innerHTML = "<span class='errMsg'>SPARQL syntax error</span>" ;
+		globalClear();
+	}
 }
 function makeTable(head, rows) {
-    let html = "<table><tr>";
-    for (let i=0; i<head.length; i++) {
-        html += "<th>" + head[i] + "</th>";
-    }
-    html += "</tr>";
-    for (let i=0; i<rows.length; i++) {
-        html += "<tr>";
-        for (let j=0; j<head.length; j++) {
-            let col = head[j];
-            if(rows[i][col] != null){
-				
+	let html =  '<input type="button" value="clear results" onclick="erase()" class="button">' ;
+	html += '<a href="javascript:void(0)" onclick="csvDownload()" id="downloadCs" class="downLoad">CSV Download</a>' ;
+	html += '<a href="javascript:void(0)" onclick="jsonDownload()" id="downloadJs" class="downLoad">JSON Download</a>' ;
+	html += "<table><tr>";
+	for (let i=0; i<head.length; i++) {
+		html += "<th>" + head[i] + "</th>";
+	}
+	html += "</tr>";
+	for (let i=0; i<rows.length; i++) {
+		html += "<tr>";
+		for (let j=0; j<head.length; j++) {
+			let col = head[j];
+			if(rows[i][col] != null){
 				if(rows[i][col].value.slice(0,4) == "http"){
-					
 					html += "<td>" + "<a href ='" + rows[i][col].value + "' target='_blank'>" + rows[i][col].value + "</a>" + "</td>";
-					
 				}else{
 					html += "<td>" + rows[i][col].value + "</td>";
 				}
-            }else{
-                html += "<td></td>";
-            }
-        }
-        html += "</tr>";
-    }
-    html += "</table>";	
-    document.getElementById("results").innerHTML = '<input type="button" value="clear results" onclick="erase()" class="button">' ;
-    document.getElementById("results").innerHTML += html;
+			}else{
+				html += "<td></td>";
+			}
+		}
+		html += "</tr>";
+	}
+	html += "</table>";	
+	document.getElementById("results").innerHTML = html;
 }
 function erase() {
     document.getElementById("results").innerHTML = '' ;
+	globalClear();
+}
+function globalClear() {
+	csvText = "";
+	jsonText = ""; 
+	head = "";
+	rows = "";
+}
+function csvDownload() {
+	for (let i=0; i<(head.length - 1); i++) {
+		csvText += head[i] + ",";
+	}
+	csvText += head[head.length - 1] + "\r\n";
+	for (let i=0; i<rows.length; i++) {
+		for (let j=0; j<(head.length - 1); j++) {
+			csvText += rows[i][head[j]].value + ",";
+		}
+		csvText += rows[i][head[head.length - 1]].value + "\r\n";
+	}
+	
+	//以下出力（csvなので一応ボムをつける）
+	const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+	const blob = new Blob([bom, csvText]);
+	if (window.navigator.msSaveBlob) {
+		window.navigator.msSaveOrOpenBlob(blob, 'result.csv');
+	} else {
+		document.getElementById("downloadCs").href = window.URL.createObjectURL(blob);
+		document.getElementById("downloadCs").setAttribute('download', 'result.csv');
+	}
+}
+function jsonDownload() {
+	const blob = new Blob([jsonText]);
+	if (window.navigator.msSaveBlob) {
+		window.navigator.msSaveOrOpenBlob(blob, 'result.json');
+	} else {
+		document.getElementById("downloadJs").href = window.URL.createObjectURL(blob);
+		document.getElementById("downloadJs").setAttribute('download', 'result.json');
+	}
 }
 </script>
 </head>
 <body>
-<div class="parent" id="parent">
+<div class="parent">
 <div class="inner">
 <h2>SPARQL Endpoint URI： <a href="<?php echo (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
 <?php echo (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>
 </a>
 </h2>
 <h2>SPARQL test form</h2>
-<form id="form1" name="myForm"> 
-<textarea id="query" style="width:100%; height:200px;">
+<form> 
+<textarea id="query" class="textArea">
 SELECT *
 WHERE{ ?s ?p ?o } 
-LIMIT 10
+LIMIT 20
 </textarea>
 <br>
 <input type="button" value="execute" onclick="execute()" class="button">
