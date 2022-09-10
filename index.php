@@ -1,10 +1,13 @@
 <?php
-
 // **************  ここにエンドポイントのURLを入力してください  *******************
 
 $url = 'https://xxx.xxx.xxx.xxx:8001/orardf/api/v1/datasets/query/published/HERSYS';
 
 //  *******************************************************************************
+
+// CORSを許可
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
 // POSTがある場合
 if(isset($_POST['query'])){
@@ -16,6 +19,7 @@ if(isset($_POST['query'])){
 	$query = array('query' => $_GET['query']);
 	getData($url,$query);
 }
+
 function getData($url,$query){
 	// クエリ配列からURLエンコードされたクエリ文字列を生成
 	$query = http_build_query($query, "", "&");
@@ -24,7 +28,7 @@ function getData($url,$query){
 	// ヘッダーの作成
 	$header  = array(
 		"Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
-		"Accept: application/sparql-results+json"
+		"Accept: application/sparql-results+json"	
 	);
 	// コンテキスト作成
 	// ※ SSLエラーを回避するため証明書チェックを外している
@@ -83,6 +87,10 @@ table {
 	font-size:125%; 
 	margin:0 0 15px 0;
 }
+. errMsg {
+	font-size:125%;
+	color:red;
+}
 </style>
 <script>
 function execute() {
@@ -115,13 +123,13 @@ function onSuccessQuery(text) {
 			const head = jsonObj.head.vars;
 			const rows = jsonObj.results.bindings;
 			if (rows.length === 0) {
-				document.getElementById("results").innerHTML = "<span style='font-size:125%;color:red;'>There is no data that matches the search condition.</span>" ;
+				document.getElementById("results").innerHTML = "<span class='errMsg'>There is no data that matches the search condition.</span>" ;
 				return;
 			}
 			makeTable(head, rows);
 
 		} catch (error) {			
-			document.getElementById("results").innerHTML = "<span style='font-size:125%;color:red;'>SPARQL syntax error</span>" ;
+			document.getElementById("results").innerHTML = "<span class='errMsg'>SPARQL syntax error</span>" ;
 		}
 }
 function makeTable(head, rows) {
