@@ -1,4 +1,4 @@
-# Oracle RDF Graph Server の<br> SPARQL ENDPOINT補助プログラム
+# Oracle RDF Graph Server の SPARQL ENDPOINT お助けアプリ
 　LODチャレンジ2022のイベント <a href="https://lodc2022sparql.peatix.com/">SPARQLエンドポイントの使い方・作り方2022</a> にてオラクルさんから紹介があった、Oracle RDF Graph Server を構築し使ってみたところ、初めての方には少し使いにくいだろうな、と感じる点がいくつかありました。
 
 ・　エンドポイントのURLが長くて、グローバルIPとポート番号が丸見えで恥ずかしい<br>
@@ -8,18 +8,19 @@
 ・　ブラウザJSから直接エンドポイントに向けたAjax通信が通らない<br>
 ・　公開用のSPARQLクエリ入力フォーム画面がない（<a href="https://yasgui.triply.cc/">Yasgui</a>等を利用する必要あり）<br>
  
-　これらの使いにくい点を補完するための、ちょっとしたPHPプログラムを作成しましたので、どうぞご利用ください。
+　これらの使いにくい点を補完するための、ちょっとしたPHPアプリケーションを作成しましたのでどうぞご利用ください。もし変なところがあればプルリクなどで教えていただけると助かります。
  
 ## 設置方法
 
 　事前にオラクルクラウドで RDF Graph Server を立てておいてください。詳しくは<a href="https://lodc2022sparql.peatix.com/">こちら</a>をご覧ください。<br>
-　このリポジトリにある index.php をダウンロードし、テキストエディタで開いて、あなたが構築した Oracle RDF Graph Server のエンドポイントURLを追記してください。<br>
+　このリポジトリにある index.php をダウンロードし、テキストエディタで開いて、あなたが構築した Oracle RDF Graph Server のエンドポイントURLを上書きしてください。<br>
 　次に、PHP7.0以上が使えるWEBサーバーに、その index.php を設置してください。それだけです。ファイル名を変更してもOKです。
 
 ## 使い方
 
-　WEBサーバーに設置した index.php をエンドポイントとしてクエリを投げてみてください。POST又はGETのどちらでもOKです。結果がJSONで返ります。<br>
-　また、POSTやGETパラメータなしで、ブラウザから index.php にアクセスすると、SPARQLクエリの簡易入力フォーム画面が表示されます。
+　WEBサーバーに設置した index.php をエンドポイントとしてクエリを投げてみてください。結果がJSONで返ります。POST又はGETのどちらでもOKです。POSTやGETの key name は <b>query</b> としてください。<br>
+　CORS（クロスオリジンリソースシェアリング）も許可しているため、ローカルや別サーバーからのAjaxでのリクエストも可能です。<br>
+　また、POSTやGETパラメータなしで、ブラウザから index.php にアクセスすると、SPARQLクエリの簡易入力フォーム画面が表示されます。誰でも簡単にSPARQLを利用することができます。<br>
  
 ## 利用例
 エンドポイントURLは下記のいずれでもOK<br>
