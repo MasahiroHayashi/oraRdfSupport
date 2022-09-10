@@ -1,4 +1,4 @@
-# Oracle RDF Graph Server の SPARQL ENDPOINT お助けアプリ
+# Oracle RDF Graph Server の SPARQL ENDPOINT サポートアプリ
 　LODチャレンジ2022のイベント <a href="https://lodc2022sparql.peatix.com/">SPARQLエンドポイントの使い方・作り方2022</a> にてオラクルさんから紹介があった、Oracle RDF Graph Server を構築し使ってみたところ、初めての方には少し使いにくいだろうな、と感じる点がいくつかありました。
 
 ・　エンドポイントのURLが長くて、グローバルIPとポート番号が丸見えで恥ずかしい<br>
