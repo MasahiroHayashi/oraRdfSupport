@@ -44,11 +44,27 @@ function getData($url,$query){
 	);
 	// ストリームコンテキストに変換
 	$context = stream_context_create($context);
+	
+	// エラー時に例外をスローするように登録（Warningの警告エラーを例外としてキャッチするため）
+	set_error_handler(function($errno, $errstr, $errfile, $errline) {
+		if (!(error_reporting() & $errno)) {
+			return;
+		}
+		throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+	});
+	
 	// データ取得
-	$contents = file_get_contents($url, false, $context);
-	// 取得したデータを吐き出す
-	echo $contents ;
-	// POST or GET がある場合はここで終了
+	try {
+		$contents = file_get_contents($url, false, $context);
+		// 取得したデータを吐き出す
+		echo $contents ;
+		
+	// SPARQLに文法エラーがあり file_get_contents で例外が出た場合
+	} catch ( Exception $ex ) {
+		//JSON形式でエラーを返す
+		echo '{ "status":"error" , "detail":"SPARQL syntax error" }' ;
+	}
+	// POST or GET がある場合はここで強制終了（HTMLを表示させない）
 	die;
 }
 
@@ -129,30 +145,50 @@ function sparqlQuery(queryStr,endpoint,method) {
 			if(xmlhttp.status == 200 || xmlhttp.status == 201 ) {
 				onSuccessQuery(xmlhttp.responseText);
 			} else {
-				document.getElementById("results").innerHTML = "server error" ;
+				// エラー1：HTTPステータスエラー（インスタンスのWEBサーバー障害等）
+				document.getElementById("results").innerHTML = "<span class='errMsg'>error1 : Server error</span>" ;
 				globalClear();
 				return;
 			}
 		}
 	}
-xmlhttp.send(querypart);
+	xmlhttp.send(querypart);
 }
 function onSuccessQuery(text) {
+	let jsonObj ;
+	// エラー2：PHP側で何らかのエラーが出てしまった場合（PHP側のtry-catchで捉えられないもののみ）
 	try {
-		const jsonObj = JSON.parse(text);
-		jsonText = JSON.stringify(jsonObj,undefined,1);
+		jsonObj = JSON.parse(text); // JSONのパースができるかどうかで判定
+	} catch (error) {
+		document.getElementById("results").innerHTML = "<span class='errMsg'>error2 : Unexplained error</span>" ;
+		globalClear();
+		return ;
+	}
+	// PHP側ではエラーは出ずJSONで結果が返った場合
+	try {
+		jsonText = JSON.stringify(jsonObj,undefined,1); // 整形してからグローバル変数に入れる
 		head = jsonObj.head.vars;
 		rows = jsonObj.results.bindings;
 		if (rows.length === 0) {
-			document.getElementById("results").innerHTML = "<span class='errMsg'>There is no data that matches the search condition.</span>" ;
+			// エラー3：SPARQLは正しく書けているが結果が0件だった場合
+			document.getElementById("results").innerHTML = "<span class='errMsg'>error3 : There is no data that matches the search condition.</span>" ;
 			globalClear();
 			return;
 		}
 		makeTable(head, rows);
-
-	} catch (error) {			
-		document.getElementById("results").innerHTML = "<span class='errMsg'>SPARQL syntax error</span>" ;
+	} catch (error) {
+		const errorJsonObj = JSON.parse(text);
+		let msg ;
+		// エラー4：SPARQL文法は正しいが、Autonomous Database が「停止中」のときに出るエラー
+		if(errorJsonObj.detail && errorJsonObj.detail.substr(0, 9) === "Exception"){
+			msg = "<span class='errMsg'>error4 : SPARQL database may be down.</span>";
+		// エラー5：SPARQL文法上のエラー（PHP側でキャッチしたものも含む）
+		} else {
+			msg = "<span class='errMsg'>error5 : SPARQL syntax error</span>";
+		}
+		document.getElementById("results").innerHTML = msg + "<br><pre>" + JSON.stringify(errorJsonObj,undefined,1) + "</pre>" ;
 		globalClear();
+		return;
 	}
 }
 function makeTable(head, rows) {
@@ -205,7 +241,7 @@ function csvDownload() {
 		csvText += rows[i][head[head.length - 1]].value + "\r\n";
 	}
 	
-	//以下出力（csvなので一応ボムをつける）
+	//以下出力（csvなので一応BOMをつける）
 	const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
 	const blob = new Blob([bom, csvText]);
 	if (window.navigator.msSaveBlob) {
