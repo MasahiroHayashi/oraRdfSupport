@@ -14,7 +14,8 @@
 
 　事前にオラクルクラウドで RDF Graph Server を立てておいてください。詳しくは<a href="https://lodc2022sparql.peatix.com/">こちら</a>をご覧ください。<br>
 　このリポジトリにある index.php をダウンロードし、テキストエディタで開いて、あなたが構築した Oracle RDF Graph Server のエンドポイントURLを上書きしてください。<br>
-　次に、PHP7.0以上が使えるWEBサーバーに、その index.php を設置してください。それだけです。ファイル名を変更してもOKです。
+　次に、PHP7.0以上が使えるWEBサーバーに、その index.php を設置してください。無料レンタルサーバー等の外部サーバーでもよいですし、このRDF Graph Server のインスタンスに Apache などでWEBサーバーを立ててそこに突っ込んでもよいです。<br>
+　ファイル名を変更してもOKです。
 
 ## 使い方
 
