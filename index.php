@@ -82,7 +82,6 @@ function getData($url,$query){
 	margin: auto;
 }
 table {
-	word-break: break-all;
 	border-collapse:  collapse;
 	width:  100%;
 	table-layout: fixed;
@@ -116,25 +115,46 @@ td {
 	background:#EEE;
 }
 .textArea {
+	font-size:140%;
 	width:100%;
 	height:200px;	
+}
+.resOption {
+	margin-left:20px;
+	color: #CCC;
 }
 </style>
 <script>
 //CSVとJSONダウンロードのためのグローバル変数
-let csvText = "";
-let jsonText = ""; 
-let head = "";
-let rows = "";
+let csvText = "" ;
+let jsonText = "" ; 
+let head ;
+let rows ;
+// ローディングアニメ用グローバル変数
+let global_repeat;
 
 function execute() {
-	document.getElementById("results").innerHTML = "connecting...";
+"use strict";
+	// ローディングアニメ
+	let output = 'Loading･･';
+	function repeatFunc() {
+		if(output == 'Loading････････････････'){
+			output = 'Loading';
+		}
+		output += '･' ;
+		document.getElementById("connect").innerText = output;
+		global_repeat = setTimeout(repeatFunc, 300);
+	}
+	repeatFunc() ;
+	
+    document.getElementById("results").innerHTML = '' ;
 	const endpoint = location.href;
 	const method = "POST";
 	const query = document.getElementById("query").value;
 	sparqlQuery(query,endpoint,method) ;
 }
-function sparqlQuery(queryStr,endpoint,method) { 
+function sparqlQuery(queryStr,endpoint,method) {
+"use strict";
 	const querypart = "query=" + encodeURIComponent(queryStr);
 	let xmlhttp = new XMLHttpRequest();
 	xmlhttp.open(method, endpoint, true);
@@ -146,8 +166,8 @@ function sparqlQuery(queryStr,endpoint,method) {
 				onSuccessQuery(xmlhttp.responseText);
 			} else {
 				// エラー1：HTTPステータスエラー（インスタンスのWEBサーバー障害等）
+				eraseResultArea();
 				document.getElementById("results").innerHTML = "<span class='errMsg'>error1 : Server error</span>" ;
-				globalClear();
 				return;
 			}
 		}
@@ -155,13 +175,14 @@ function sparqlQuery(queryStr,endpoint,method) {
 	xmlhttp.send(querypart);
 }
 function onSuccessQuery(text) {
+"use strict";
 	let jsonObj ;
 	// エラー2：PHP側で何らかのエラーが出てしまった場合（PHP側のtry-catchで捉えられないもののみ）
 	try {
 		jsonObj = JSON.parse(text); // JSONのパースができるかどうかで判定
 	} catch (error) {
+		eraseResultArea();
 		document.getElementById("results").innerHTML = "<span class='errMsg'>error2 : Unexplained error</span>" ;
-		globalClear();
 		return ;
 	}
 	// PHP側ではエラーは出ずJSONで結果が返った場合
@@ -171,13 +192,19 @@ function onSuccessQuery(text) {
 		rows = jsonObj.results.bindings;
 		if (rows.length === 0) {
 			// エラー3：SPARQLは正しく書けているが結果が0件だった場合
+			eraseResultArea();
 			document.getElementById("results").innerHTML = "<span class='errMsg'>error3 : There is no data that matches the search condition.</span>" ;
-			globalClear();
 			return;
 		}
 		makeTable(head, rows);
 	} catch (error) {
-		const errorJsonObj = JSON.parse(text);
+		const errorJsonObj = JSON.parse(text);		
+		let errorTable = "<table>" ;
+		const keyArr = Object.keys(errorJsonObj);
+		for (let i=0; i<keyArr.length; i++) {
+			errorTable += "<tr><th style='width:170px;'>" + keyArr[i] + "</th><td>" + errorJsonObj[keyArr[i]] + "</td></tr>" ;
+		}
+		errorTable += "</table>" ;		
 		let msg ;
 		// エラー4：SPARQL文法は正しいが、Autonomous Database が「停止中」のときに出るエラー
 		if(errorJsonObj.detail && errorJsonObj.detail.substr(0, 9) === "Exception"){
@@ -186,13 +213,14 @@ function onSuccessQuery(text) {
 		} else {
 			msg = "<span class='errMsg'>error5 : SPARQL syntax error</span>";
 		}
-		document.getElementById("results").innerHTML = msg + "<br><pre>" + JSON.stringify(errorJsonObj,undefined,1) + "</pre>" ;
-		globalClear();
+		eraseResultArea();
+		document.getElementById("results").innerHTML = msg + errorTable ;
 		return;
 	}
 }
 function makeTable(head, rows) {
-	let html =  '<input type="button" value="clear results" onclick="erase()" class="button">' ;
+"use strict";
+	let html =  '<input type="button" value="clear results" onclick="eraseResultArea()" class="button">' ;
 	html += '<a href="javascript:void(0)" onclick="csvDownload()" id="downloadCs" class="downLoad">CSV Download</a>' ;
 	html += '<a href="javascript:void(0)" onclick="jsonDownload()" id="downloadJs" class="downLoad">JSON Download</a>' ;
 	html += "<table><tr>";
@@ -200,15 +228,26 @@ function makeTable(head, rows) {
 		html += "<th>" + head[i] + "</th>";
 	}
 	html += "</tr>";
+	let lang = "";
+	let datatype = "";
 	for (let i=0; i<rows.length; i++) {
 		html += "<tr>";
 		for (let j=0; j<head.length; j++) {
 			let col = head[j];
+			lang = "";
+			datatype = "";
 			if(rows[i][col] != null){
+				if(rows[i][col]["xml:lang"]){
+					lang = "<span class='resOption'>@" + rows[i][col]["xml:lang"] + "</span>" ;
+				}
+				if(rows[i][col]["datatype"]){
+					datatype = rows[i][col]["datatype"].replace( 'http://www.w3.org/2001/XMLSchema#', 'xml:' );
+					datatype = "<span class='resOption'>" + datatype + "</span>" ;
+				}
 				if(rows[i][col].value.slice(0,4) == "http"){
-					html += "<td>" + "<a href ='" + rows[i][col].value + "' target='_blank'>" + rows[i][col].value + "</a>" + "</td>";
+					html += "<td>" + "<a href ='" + rows[i][col].value + "' target='_blank'>" + rows[i][col].value + "</a></td>";
 				}else{
-					html += "<td>" + rows[i][col].value + "</td>";
+					html += "<td>" + rows[i][col].value + lang + datatype + "</td>";
 				}
 			}else{
 				html += "<td></td>";
@@ -217,19 +256,22 @@ function makeTable(head, rows) {
 		html += "</tr>";
 	}
 	html += "</table>";	
+	clearTimeout(global_repeat); //アニメーション終了
+    document.getElementById("connect").innerHTML = '' ;
 	document.getElementById("results").innerHTML = html;
 }
-function erase() {
+function eraseResultArea() {
+"use strict";
+	clearTimeout(global_repeat); //アニメーション終了
+    document.getElementById("connect").innerHTML = '' ;
     document.getElementById("results").innerHTML = '' ;
-	globalClear();
-}
-function globalClear() {
 	csvText = "";
 	jsonText = ""; 
 	head = "";
 	rows = "";
 }
 function csvDownload() {
+"use strict";
 	for (let i=0; i<(head.length - 1); i++) {
 		csvText += head[i] + ",";
 	}
@@ -252,6 +294,7 @@ function csvDownload() {
 	}
 }
 function jsonDownload() {
+"use strict";
 	const blob = new Blob([jsonText]);
 	if (window.navigator.msSaveBlob) {
 		window.navigator.msSaveOrOpenBlob(blob, 'result.json');
