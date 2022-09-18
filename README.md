@@ -33,3 +33,6 @@ GET例<br>
  
 POST例<br>
 　https://hersys.mirko.jp/sparql/post.html<br>
+ 
+無料レンタルサーバー設置例<br>
+　https://ss1.xrea.com/yookan.s1010.xrea.com/sp/
