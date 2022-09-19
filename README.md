@@ -37,3 +37,6 @@ POST例<br>
  
 無料レンタルサーバー設置例<br>
 　https://ss1.xrea.com/yookan.s1010.xrea.com/sp/
+
+## お悩み中の点
+　作成した Oracle RDF Graph Server のインスタンスに apache などでWEBサーバーを作ってこのプログラムを動作させることができれば一石二鳥だと思いましたが、"Permission denied" エラーによりうまく動作しません。よい方法があれば教えていただけると助かります。
