@@ -257,14 +257,14 @@ function makeTable(head, rows) {
 	}
 	html += "</table>";	
 	clearTimeout(global_repeat); //アニメーション終了
-    document.getElementById("connect").innerHTML = '' ;
+	document.getElementById("connect").innerHTML = '' ;
 	document.getElementById("results").innerHTML = html;
 }
 function eraseResultArea() {
 "use strict";
 	clearTimeout(global_repeat); //アニメーション終了
-    document.getElementById("connect").innerHTML = '' ;
-    document.getElementById("results").innerHTML = '' ;
+	document.getElementById("connect").innerHTML = '' ;
+	document.getElementById("results").innerHTML = '' ;
 	csvText = "";
 	jsonText = ""; 
 	head = "";
