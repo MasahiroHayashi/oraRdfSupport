@@ -15,8 +15,7 @@
 　事前にオラクルクラウドで RDF Graph Server を立てておいてください。詳しくは<a href="https://lodc2022sparql.peatix.com/">こちら</a>をご覧ください。<br>
 　このリポジトリにある index.php をダウンロードし、テキストエディタで開いて、あなたが構築した Oracle RDF Graph Server のエンドポイントURLを上書きしてください。<br>
 　次に、PHP7.0以上が使えるWEBサーバーに、その上書きした index.php を設置してください。無料レンタルサーバーなどでもよいです。<br>
-　すでに index.html や index.php が存在するディレクトリに設置したい場合は、ファイル名を変更（sparql.php 等）してもOKです。<br>
- 　見た目などを好みに改造して使っていただくのももちろんOKです。
+　すでに index.html や index.php が存在するディレクトリに設置したい場合は、ファイル名を変更（sparql.php 等）してもOKです。見た目などを好みに改造して使っていただくのももちろんOKです。
 
 ## 使い方
 
@@ -39,4 +38,4 @@ POST例<br>
 　https://ss1.xrea.com/yookan.s1010.xrea.com/sp/
 
 ## 悩み中の点
-　作成した Oracle RDF Graph Server のインスタンスに apache などでWEBサーバーを作ってこのプログラムを動作させることができれば一石二鳥だと思いましたが、"Permission denied" エラーによりうまく動作しません。よい方法があれば教えていただけると助かります。
+　作成した Oracle RDF Graph Server のインスタンスに apache などでWEBサーバーを作ってこのプログラムを動作させることができれば一石二鳥だと思いましたが、"Permission denied" エラーによりうまく動作しません。よい解決法をご存じであれば教えていただけると助かります。
